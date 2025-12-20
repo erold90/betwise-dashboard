@@ -934,3 +934,29 @@ function showMatchDetail(matchId) {
 
     alert(`Dettaglio Partita:\n\n${match.homeTeam} vs ${match.awayTeam}\n\nxG Casa: ${match.prediction.homeXG}\nxG Trasferta: ${match.prediction.awayXG}\n\nPredizione: ${match.prediction.likelyScore[0]}-${match.prediction.likelyScore[1]}\n\nConfidenza: ${match.confidence}%`);
 }
+
+// Clear cache and reload
+function clearCacheAndReload() {
+    // Clear localStorage (keeps bet history)
+    const betsBackup = localStorage.getItem('betwise_bets');
+
+    // Clear all caches
+    if ('caches' in window) {
+        caches.keys().then(names => {
+            names.forEach(name => {
+                caches.delete(name);
+            });
+        });
+    }
+
+    // Clear sessionStorage
+    sessionStorage.clear();
+
+    // Restore bets
+    if (betsBackup) {
+        localStorage.setItem('betwise_bets', betsBackup);
+    }
+
+    // Force reload from server (bypass cache)
+    window.location.reload(true);
+}
