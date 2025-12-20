@@ -1,9 +1,9 @@
-name: BetWise Weekend Predictions
+name: BetWise Weekend Analysis
 
 on:
   schedule:
-    # Run every Friday at 18:00 UTC (19:00 CET, 20:00 CEST)
-    - cron: '0 18 * * 5'
+    # Run every Thursday at 18:00 UTC (19:00 CET, 20:00 CEST)
+    - cron: '0 18 * * 4'
   workflow_dispatch: # Allow manual trigger
 
 permissions:
