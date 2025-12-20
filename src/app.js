@@ -274,169 +274,143 @@ function findValueBets(prediction, odds) {
     return valueBets.sort((a, b) => b.edge - a.edge);
 }
 
-// Generate schedine
+// Generate schedine with new 4-jackpot structure
 function generateSchedine(matches) {
-    // Sort by value and confidence
     const sortedMatches = [...matches].sort((a, b) => {
         const aValue = a.valueBets.length > 0 ? a.valueBets[0].edge : 0;
         const bValue = b.valueBets.length > 0 ? b.valueBets[0].edge : 0;
         return bValue - aValue;
     });
 
-    // Schedina Sicura: 3 selezioni, quote basse (1.20-1.50)
-    const sicura = [];
-    sortedMatches.forEach(match => {
-        if (sicura.length >= 3) return;
-
-        // Prefer DC or Over 1.5 with high probability
-        if (match.prediction.homeWin + match.prediction.draw > 80 && match.odds.dc1x <= 1.50) {
-            sicura.push({
-                match: `${match.homeTeam} vs ${match.awayTeam}`,
-                league: match.leagueName,
-                flag: match.leagueFlag,
-                selection: 'DC 1X',
-                odds: match.odds.dc1x,
-                probability: match.prediction.homeWin + match.prediction.draw
-            });
-        } else if (match.prediction.over15 > 80 && match.odds.over15 <= 1.40) {
-            sicura.push({
-                match: `${match.homeTeam} vs ${match.awayTeam}`,
-                league: match.leagueName,
-                flag: match.leagueFlag,
-                selection: 'Over 1.5',
-                odds: match.odds.over15,
-                probability: match.prediction.over15
-            });
-        }
+    // Helper function to create selection
+    const createSelection = (match, selection, odds, probability) => ({
+        match: `${match.homeTeam} vs ${match.awayTeam}`,
+        league: match.leagueName,
+        flag: match.leagueFlag,
+        selection,
+        odds,
+        probability
     });
 
-    // Fill with safe bets if needed
-    if (sicura.length < 3) {
-        sortedMatches.forEach(match => {
-            if (sicura.length >= 3) return;
-            if (!sicura.find(s => s.match.includes(match.homeTeam))) {
-                if (match.prediction.over15 > 75) {
-                    sicura.push({
-                        match: `${match.homeTeam} vs ${match.awayTeam}`,
-                        league: match.leagueName,
-                        flag: match.leagueFlag,
-                        selection: 'Over 1.5',
-                        odds: match.odds.over15,
-                        probability: match.prediction.over15
-                    });
-                }
-            }
-        });
-    }
-
-    // Schedina Media: 5 selezioni, mix di mercati
+    // Schedina Media: 5 selezioni value bets
     const media = [];
     sortedMatches.forEach(match => {
         if (media.length >= 5) return;
         if (media.find(s => s.match.includes(match.homeTeam))) return;
-
         const bestValue = match.valueBets[0];
         if (bestValue && bestValue.odds >= 1.40 && bestValue.odds <= 2.00) {
-            media.push({
-                match: `${match.homeTeam} vs ${match.awayTeam}`,
-                league: match.leagueName,
-                flag: match.leagueFlag,
-                selection: bestValue.market,
-                odds: bestValue.odds,
-                probability: bestValue.probability,
-                edge: bestValue.edge
-            });
+            media.push(createSelection(match, bestValue.market, bestValue.odds, bestValue.probability));
         } else if (match.prediction.over25 > 55 && match.odds.over25 <= 1.90) {
-            media.push({
-                match: `${match.homeTeam} vs ${match.awayTeam}`,
-                league: match.leagueName,
-                flag: match.leagueFlag,
-                selection: 'Over 2.5',
-                odds: match.odds.over25,
-                probability: match.prediction.over25
-            });
+            media.push(createSelection(match, 'Over 2.5', match.odds.over25, match.prediction.over25));
         }
     });
-
-    // Fill media if needed
-    if (media.length < 5) {
-        sortedMatches.forEach(match => {
-            if (media.length >= 5) return;
-            if (!media.find(s => s.match.includes(match.homeTeam))) {
-                if (match.prediction.btts > 55) {
-                    media.push({
-                        match: `${match.homeTeam} vs ${match.awayTeam}`,
-                        league: match.leagueName,
-                        flag: match.leagueFlag,
-                        selection: 'BTTS Si',
-                        odds: match.odds.bttsYes,
-                        probability: match.prediction.btts
-                    });
-                }
-            }
-        });
-    }
-
-    // Schedina Jackpot: 12+ selezioni per quota > 1000
-    const jackpot = [];
-    let currentQuota = 1;
-
+    // Fill if needed
     sortedMatches.forEach(match => {
-        if (jackpot.length >= 15 || currentQuota > 2500) return;
-        if (jackpot.find(s => s.match.includes(match.homeTeam))) return;
-
-        // For jackpot, mix safe and risky bets
-        let selection, odds, probability;
-
-        if (jackpot.length < 6 && match.prediction.over15 > 80) {
-            selection = 'Over 1.5';
-            odds = match.odds.over15;
-            probability = match.prediction.over15;
-        } else if (jackpot.length < 10 && match.prediction.homeWin + match.prediction.draw > 75) {
-            selection = 'DC 1X';
-            odds = match.odds.dc1x;
-            probability = match.prediction.homeWin + match.prediction.draw;
-        } else if (match.prediction.over25 > 60) {
-            selection = 'Over 2.5';
-            odds = match.odds.over25;
-            probability = match.prediction.over25;
-        } else if (match.prediction.btts > 55) {
-            selection = 'BTTS Si';
-            odds = match.odds.bttsYes;
-            probability = match.prediction.btts;
-        }
-
-        if (selection) {
-            jackpot.push({
-                match: `${match.homeTeam} vs ${match.awayTeam}`,
-                league: match.leagueName,
-                flag: match.leagueFlag,
-                selection,
-                odds,
-                probability
-            });
-            currentQuota *= odds;
+        if (media.length >= 5) return;
+        if (!media.find(s => s.match.includes(match.homeTeam)) && match.prediction.btts > 55) {
+            media.push(createSelection(match, 'BTTS Si', match.odds.bttsYes, match.prediction.btts));
         }
     });
+
+    // Jackpot 1: Classic (Over 1.5 + DC) - 12 selections
+    const jackpot1 = [];
+    sortedMatches.forEach(match => {
+        if (jackpot1.length >= 12) return;
+        if (jackpot1.find(s => s.match.includes(match.homeTeam))) return;
+        if (match.prediction.over15 > 80) {
+            jackpot1.push(createSelection(match, 'Over 1.5', match.odds.over15, match.prediction.over15));
+        } else if (match.prediction.homeWin + match.prediction.draw > 75) {
+            jackpot1.push(createSelection(match, 'DC 1X', match.odds.dc1x, match.prediction.homeWin + match.prediction.draw));
+        } else if (match.prediction.draw + match.prediction.awayWin > 70) {
+            jackpot1.push(createSelection(match, 'DC X2', match.odds.dcx2, match.prediction.draw + match.prediction.awayWin));
+        }
+    });
+
+    // Jackpot 2: Goals (Over 2.5 + BTTS) - 12 selections
+    const jackpot2 = [];
+    sortedMatches.forEach(match => {
+        if (jackpot2.length >= 12) return;
+        if (jackpot2.find(s => s.match.includes(match.homeTeam))) return;
+        if (match.prediction.over25 > 55) {
+            jackpot2.push(createSelection(match, 'Over 2.5', match.odds.over25, match.prediction.over25));
+        } else if (match.prediction.btts > 50) {
+            jackpot2.push(createSelection(match, 'BTTS Si', match.odds.bttsYes, match.prediction.btts));
+        }
+    });
+
+    // Jackpot 3: Results (1X2 only) - 10 selections
+    const jackpot3 = [];
+    sortedMatches.forEach(match => {
+        if (jackpot3.length >= 10) return;
+        if (jackpot3.find(s => s.match.includes(match.homeTeam))) return;
+        if (match.prediction.homeWin > 50) {
+            jackpot3.push(createSelection(match, '1', match.odds.home, match.prediction.homeWin));
+        } else if (match.prediction.awayWin > 45) {
+            jackpot3.push(createSelection(match, '2', match.odds.away, match.prediction.awayWin));
+        }
+    });
+
+    // Jackpot 4: Mega (Mix everything) - 15 selections
+    const jackpot4 = [];
+    const usedMatches = new Set();
+    sortedMatches.forEach(match => {
+        if (jackpot4.length >= 15) return;
+        if (usedMatches.has(match.homeTeam)) return;
+        usedMatches.add(match.homeTeam);
+
+        if (jackpot4.length < 3 && match.prediction.over15 > 85) {
+            jackpot4.push(createSelection(match, 'Over 1.5', match.odds.over15, match.prediction.over15));
+        } else if (jackpot4.length < 6 && match.prediction.homeWin > 60) {
+            jackpot4.push(createSelection(match, '1', match.odds.home, match.prediction.homeWin));
+        } else if (jackpot4.length < 9 && match.prediction.over25 > 60) {
+            jackpot4.push(createSelection(match, 'Over 2.5', match.odds.over25, match.prediction.over25));
+        } else if (jackpot4.length < 12 && match.prediction.btts > 55) {
+            jackpot4.push(createSelection(match, 'BTTS Si', match.odds.bttsYes, match.prediction.btts));
+        } else if (match.prediction.homeWin + match.prediction.draw > 70) {
+            jackpot4.push(createSelection(match, 'DC 1X', match.odds.dc1x, match.prediction.homeWin + match.prediction.draw));
+        }
+    });
+
+    const calcOdds = (arr) => arr.reduce((acc, s) => acc * s.odds, 1);
 
     return {
-        sicura: {
-            selections: sicura,
-            totalOdds: sicura.reduce((acc, s) => acc * s.odds, 1).toFixed(2),
-            stake: 4,
-            winRate: 45
-        },
         media: {
             selections: media,
-            totalOdds: media.reduce((acc, s) => acc * s.odds, 1).toFixed(2),
+            totalOdds: calcOdds(media).toFixed(2),
             stake: 3,
-            winRate: 20
+            winRate: 18
         },
-        jackpot: {
-            selections: jackpot,
-            totalOdds: jackpot.reduce((acc, s) => acc * s.odds, 1).toFixed(0),
+        jackpot1: {
+            name: 'Classic',
+            emoji: '🔴',
+            selections: jackpot1,
+            totalOdds: calcOdds(jackpot1).toFixed(2),
+            stake: 2,
+            winRate: 8
+        },
+        jackpot2: {
+            name: 'Goals',
+            emoji: '🔥',
+            selections: jackpot2,
+            totalOdds: calcOdds(jackpot2).toFixed(0),
             stake: 1,
-            winRate: 0.1
+            winRate: 0.8
+        },
+        jackpot3: {
+            name: 'Results',
+            emoji: '💎',
+            selections: jackpot3,
+            totalOdds: calcOdds(jackpot3).toFixed(0),
+            stake: 1,
+            winRate: 0.3
+        },
+        jackpot4: {
+            name: 'Mega',
+            emoji: '🚀',
+            selections: jackpot4,
+            totalOdds: calcOdds(jackpot4).toFixed(0),
+            stake: 1,
+            winRate: 0.05
         }
     };
 }
@@ -933,6 +907,93 @@ function showMatchDetail(matchId) {
     if (!match) return;
 
     alert(`Dettaglio Partita:\n\n${match.homeTeam} vs ${match.awayTeam}\n\nxG Casa: ${match.prediction.homeXG}\nxG Trasferta: ${match.prediction.awayXG}\n\nPredizione: ${match.prediction.likelyScore[0]}-${match.prediction.likelyScore[1]}\n\nConfidenza: ${match.confidence}%`);
+}
+
+// Send schedine to Telegram
+async function sendToTelegram() {
+    if (!state.schedine) {
+        alert('Nessuna schedina disponibile!');
+        return;
+    }
+
+    const BOT_TOKEN = '8379433484:AAFnASEyKrae--Z9aRUeB8L_2aeGGb0YFPA';
+    const CHAT_ID = '328390648';
+
+    const formatSchedina = (schedina, name, emoji) => {
+        if (!schedina || !schedina.selections || schedina.selections.length === 0) return '';
+
+        let msg = `\n${emoji} <b>${name}</b>\n`;
+        msg += `Quota: <b>${schedina.totalOdds}</b> | Puntata: €${schedina.stake}\n\n`;
+
+        schedina.selections.forEach((sel, i) => {
+            msg += `${i + 1}. ${sel.flag} ${sel.match}\n`;
+            msg += `   ➤ <b>${sel.selection}</b> @${sel.odds} (${sel.probability}%)\n`;
+        });
+
+        const vincita = parseFloat(schedina.totalOdds) * schedina.stake;
+        msg += `\n💰 Vincita potenziale: <b>€${vincita.toFixed(2)}</b>`;
+        return msg;
+    };
+
+    const sendMessage = async (text) => {
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: text,
+                    parse_mode: 'HTML',
+                    disable_web_page_preview: true
+                })
+            });
+            return response.ok;
+        } catch (e) {
+            console.error('Telegram error:', e);
+            return false;
+        }
+    };
+
+    // Show loading
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="animate-pulse">Invio...</span>';
+    btn.disabled = true;
+
+    try {
+        // Send header
+        const header = `🎯 <b>BETWISE - Schedine Weekend</b>\n📅 ${document.getElementById('weekendDate').textContent}\n\n🔗 Dashboard: https://erold90.github.io/betwise-dashboard/`;
+        await sendMessage(header);
+
+        // Send Media
+        if (state.schedine.media) {
+            await sendMessage(formatSchedina(state.schedine.media, 'SCHEDINA MEDIA', '🟡'));
+        }
+
+        // Send Jackpots
+        if (state.schedine.jackpot1) {
+            await sendMessage(formatSchedina(state.schedine.jackpot1, 'JACKPOT CLASSIC', '🔴'));
+        }
+        if (state.schedine.jackpot2) {
+            await sendMessage(formatSchedina(state.schedine.jackpot2, 'JACKPOT GOALS', '🔥'));
+        }
+        if (state.schedine.jackpot3) {
+            await sendMessage(formatSchedina(state.schedine.jackpot3, 'JACKPOT RESULTS', '💎'));
+        }
+        if (state.schedine.jackpot4) {
+            await sendMessage(formatSchedina(state.schedine.jackpot4, 'JACKPOT MEGA', '🚀'));
+        }
+
+        // Send footer
+        await sendMessage('⚠️ <i>Gioca responsabilmente. Le previsioni sono basate su modelli statistici.</i>\n\n🤖 Generato da BetWise');
+
+        alert('✅ Schedine inviate su Telegram!');
+    } catch (e) {
+        alert('❌ Errore invio Telegram: ' + e.message);
+    }
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
 }
 
 // Clear cache and reload

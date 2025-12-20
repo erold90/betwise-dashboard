@@ -2,6 +2,7 @@
 """
 BetWise Telegram Notification Bot
 Sends weekend predictions to Telegram
+Updated for 4 Jackpot structure
 """
 
 import json
@@ -32,12 +33,12 @@ def send_telegram_message(bot_token: str, chat_id: str, message: str, parse_mode
         return False
 
 
-def format_schedina(schedina: dict, tipo: str) -> str:
+def format_schedina(schedina: dict, nome: str, emoji: str) -> str:
     """Format a schedina for Telegram"""
-    emoji = {"sicura": "🟢", "media": "🟡", "jackpot": "🔴"}.get(tipo, "⚪")
-    nome = {"sicura": "SICURA", "media": "MEDIA", "jackpot": "JACKPOT"}.get(tipo, tipo.upper())
+    if not schedina or not schedina.get('selections'):
+        return ""
 
-    lines = [f"\n{emoji} <b>SCHEDINA {nome}</b>"]
+    lines = [f"\n{emoji} <b>{nome}</b>"]
     lines.append(f"Quota: <b>{schedina['totalOdds']}</b> | Puntata: €{schedina['stake']}")
     lines.append("")
 
@@ -70,8 +71,7 @@ def main():
         return
 
     # Format header message
-    header = f"""
-🎯 <b>BETWISE - Previsioni Weekend</b>
+    header = f"""🎯 <b>BETWISE - Previsioni Weekend</b>
 📅 {data.get('weekend', 'N/A')}
 
 📊 <b>Statistiche:</b>
@@ -88,26 +88,35 @@ def main():
     else:
         print("❌ Failed to send header")
 
-    # Send each schedina
+    # Get schedine
     schedine = data.get("schedine", {})
 
-    for tipo in ["sicura", "media", "jackpot"]:
-        if tipo in schedine and schedine[tipo]["selections"]:
-            message = format_schedina(schedine[tipo], tipo)
-            if send_telegram_message(bot_token, chat_id, message):
-                print(f"✅ Schedina {tipo} sent")
+    # New structure: media, jackpot1, jackpot2, jackpot3, jackpot4
+    schedine_config = [
+        ("media", "SCHEDINA MEDIA", "🟡"),
+        ("jackpot1", "JACKPOT CLASSIC", "🔴"),
+        ("jackpot2", "JACKPOT GOALS", "🔥"),
+        ("jackpot3", "JACKPOT RESULTS", "💎"),
+        ("jackpot4", "JACKPOT MEGA", "🚀"),
+    ]
+
+    for key, nome, emoji in schedine_config:
+        if key in schedine and schedine[key].get("selections"):
+            message = format_schedina(schedine[key], nome, emoji)
+            if message and send_telegram_message(bot_token, chat_id, message):
+                print(f"✅ {nome} sent")
             else:
-                print(f"❌ Failed to send schedina {tipo}")
+                print(f"❌ Failed to send {nome}")
 
     # Send top value bets
     matches = data.get("matches", [])
     value_bets = []
 
     for match in matches:
-        for vb in match.get("value_bets", [])[:2]:  # Max 2 per match
+        for vb in match.get("value_bets", [])[:2]:
             value_bets.append({
-                "match": f"{match['home_team']} vs {match['away_team']}",
-                "league": match["league_flag"],
+                "match": f"{match.get('home_team', match.get('homeTeam', 'N/A'))} vs {match.get('away_team', match.get('awayTeam', 'N/A'))}",
+                "league": match.get("league_flag", match.get("leagueFlag", "")),
                 "market": vb["market"],
                 "odds": vb["odds"],
                 "edge": vb["edge"]
@@ -126,11 +135,9 @@ def main():
             print("✅ Value bets sent")
 
     # Final message
-    footer = """
-⚠️ <i>Gioca responsabilmente. Le previsioni sono basate su modelli statistici e non garantiscono vincite.</i>
+    footer = """⚠️ <i>Gioca responsabilmente. Le previsioni sono basate su modelli statistici e non garantiscono vincite.</i>
 
-🤖 Generato automaticamente da BetWise
-"""
+🤖 Generato automaticamente da BetWise"""
     send_telegram_message(bot_token, chat_id, footer)
 
     print("\n✅ All notifications sent successfully!")
