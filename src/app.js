@@ -492,16 +492,37 @@ function updateStats() {
 function updateSchedineCards() {
     if (!state.schedine) return;
 
-    const { sicura, media, jackpot } = state.schedine;
+    const { media, jackpot1, jackpot2, jackpot3, jackpot4 } = state.schedine;
 
-    document.getElementById('quotaSicura').textContent = sicura.totalOdds;
-    document.getElementById('vincitaSicura').textContent = `Vincita: €${(sicura.stake * sicura.totalOdds).toFixed(2)}`;
+    // Media
+    if (media) {
+        document.getElementById('quotaMedia').textContent = media.totalOdds;
+        document.getElementById('vincitaMedia').textContent = `€${(media.stake * parseFloat(media.totalOdds)).toFixed(2)}`;
+    }
 
-    document.getElementById('quotaMedia').textContent = media.totalOdds;
-    document.getElementById('vincitaMedia').textContent = `Vincita: €${(media.stake * media.totalOdds).toFixed(2)}`;
+    // Jackpot 1: Classic
+    if (jackpot1) {
+        document.getElementById('quotaJackpot1').textContent = jackpot1.totalOdds;
+        document.getElementById('vincitaJackpot1').textContent = `€${(jackpot1.stake * parseFloat(jackpot1.totalOdds)).toFixed(2)}`;
+    }
 
-    document.getElementById('quotaJackpot').textContent = jackpot.totalOdds;
-    document.getElementById('vincitaJackpot').textContent = `Vincita: €${jackpot.totalOdds}+`;
+    // Jackpot 2: Goals
+    if (jackpot2) {
+        document.getElementById('quotaJackpot2').textContent = jackpot2.totalOdds;
+        document.getElementById('vincitaJackpot2').textContent = `€${jackpot2.totalOdds}`;
+    }
+
+    // Jackpot 3: Results
+    if (jackpot3) {
+        document.getElementById('quotaJackpot3').textContent = jackpot3.totalOdds;
+        document.getElementById('vincitaJackpot3').textContent = `€${jackpot3.totalOdds}`;
+    }
+
+    // Jackpot 4: Mega
+    if (jackpot4) {
+        document.getElementById('quotaJackpot4').textContent = jackpot4.totalOdds;
+        document.getElementById('vincitaJackpot4').textContent = `€${jackpot4.totalOdds}+`;
+    }
 }
 
 // Update matches display
@@ -598,30 +619,36 @@ function showSchedina(type) {
     const win = document.getElementById('modalWin');
 
     const schedina = state.schedine[type];
+    if (!schedina) return;
+
     const colors = {
-        sicura: { title: 'Schedina Sicura 🟢', color: 'green' },
         media: { title: 'Schedina Media 🟡', color: 'yellow' },
-        jackpot: { title: 'Schedina Jackpot 🔴', color: 'red' }
+        jackpot1: { title: 'Jackpot Classic 🔴', color: 'red' },
+        jackpot2: { title: 'Jackpot Goals 🔥', color: 'orange' },
+        jackpot3: { title: 'Jackpot Results 💎', color: 'cyan' },
+        jackpot4: { title: 'Jackpot Mega 🚀', color: 'pink' }
     };
 
-    title.textContent = colors[type].title;
+    const config = colors[type] || { title: 'Schedina', color: 'blue' };
+
+    title.textContent = config.title;
     quota.textContent = schedina.totalOdds;
     win.textContent = `€${(schedina.stake * parseFloat(schedina.totalOdds)).toFixed(2)}`;
 
     content.innerHTML = schedina.selections.map((sel, idx) => `
-        <div class="p-4 rounded-lg bg-dark-700 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-full bg-${colors[type].color}-600/30 text-${colors[type].color}-400 flex items-center justify-center font-bold">
+        <div class="p-3 sm:p-4 rounded-lg bg-dark-700 flex items-center justify-between">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-${config.color}-600/30 text-${config.color}-400 flex items-center justify-center font-bold text-sm">
                     ${idx + 1}
                 </span>
                 <div>
-                    <p class="font-medium">${sel.match}</p>
-                    <p class="text-sm text-gray-400">${sel.flag} ${sel.league}</p>
+                    <p class="font-medium text-sm sm:text-base">${sel.match}</p>
+                    <p class="text-xs sm:text-sm text-gray-400">${sel.flag} ${sel.league}</p>
                 </div>
             </div>
             <div class="text-right">
-                <p class="font-bold text-${colors[type].color}-400">${sel.selection}</p>
-                <p class="text-sm text-gray-400">@${sel.odds} (${sel.probability}%)</p>
+                <p class="font-bold text-${config.color}-400 text-sm sm:text-base">${sel.selection}</p>
+                <p class="text-xs sm:text-sm text-gray-400">@${sel.odds} (${sel.probability}%)</p>
             </div>
         </div>
     `).join('');
