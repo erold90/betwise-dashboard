@@ -34,7 +34,15 @@
         <div id="emptyState" class="hidden text-center py-16">
             <div class="text-6xl mb-4">📭</div>
             <h2 class="text-xl font-bold mb-2">Nessuna schedina disponibile</h2>
-            <p class="text-gray-400">Le nuove schedine arriveranno venerdì alle 19:00</p>
+            <p class="text-gray-400">Le nuove schedine arriveranno giovedì alle 19:00</p>
+        </div>
+
+        <!-- Skip State (shown when decision is SALTARE) -->
+        <div id="skipState" class="hidden text-center py-16">
+            <div class="text-6xl mb-4">⏭️</div>
+            <h2 class="text-xl font-bold mb-2 text-yellow-400">Weekend Saltato</h2>
+            <p id="skipReason" class="text-gray-400 mb-4">-</p>
+            <p id="nextAnalysis" class="text-sm text-gray-500">-</p>
         </div>
 
         <!-- Schedine Grid -->
@@ -89,8 +97,16 @@
                     return;
                 }
 
-                renderSchedine();
-                updateHeader();
+                // Check decision
+                const decision = predictions.decision || 'GIOCARE';
+
+                if (decision === 'SALTARE') {
+                    showSkip();
+                    return;
+                }
+
+                renderSchedine(decision);
+                updateHeader(decision);
             } catch (e) {
                 showEmpty();
             }
@@ -100,16 +116,17 @@
         function isExpired(data) {
             if (!data || !data.weekend) return true;
 
-            // Parse weekend date (format: "DD/MM - DD/MM")
+            // Parse weekend date (format: "DD/MM/YYYY - DD/MM/YYYY" or "DD/MM - DD/MM")
             const parts = data.weekend.split(' - ');
             if (parts.length !== 2) return true;
 
             const endParts = parts[1].split('/');
-            if (endParts.length !== 2) return true;
+            if (endParts.length < 2) return true;
 
             const day = parseInt(endParts[0]);
             const month = parseInt(endParts[1]) - 1;
-            const year = new Date().getFullYear();
+            // Use year from date if available, otherwise current year
+            const year = endParts.length === 3 ? parseInt(endParts[2]) : new Date().getFullYear();
 
             // Last match date + 1 day (expire on Monday)
             const expireDate = new Date(year, month, day + 1, 23, 59, 59);
@@ -120,43 +137,68 @@
         // Show empty state
         function showEmpty() {
             document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('skipState').classList.add('hidden');
             document.getElementById('schedineGrid').classList.add('hidden');
-            document.getElementById('statusDot').classList.replace('bg-green-500', 'bg-gray-500');
+            document.getElementById('statusDot').className = 'w-2 h-2 rounded-full bg-gray-500';
+        }
+
+        // Show skip state
+        function showSkip() {
+            document.getElementById('skipState').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('schedineGrid').classList.add('hidden');
+
+            const analysis = predictions.analysis || {};
+            document.getElementById('skipReason').textContent = analysis.recommendation || 'Condizioni non favorevoli';
+            document.getElementById('nextAnalysis').textContent = predictions.next_analysis || 'Prossima analisi: giovedì';
+
+            document.getElementById('weekend').textContent = predictions.weekend || '-';
+            document.getElementById('statusDot').className = 'w-2 h-2 rounded-full bg-yellow-500';
         }
 
         // Update header with weekend info
-        function updateHeader() {
+        function updateHeader(decision) {
             document.getElementById('weekend').textContent = predictions.weekend || '-';
-            document.getElementById('statusDot').classList.replace('bg-gray-500', 'bg-green-500');
+            const dotColor = decision === 'CAUTELA' ? 'bg-yellow-500' : 'bg-green-500';
+            document.getElementById('statusDot').className = 'w-2 h-2 rounded-full ' + dotColor;
         }
 
         // Render schedine cards
-        function renderSchedine() {
+        function renderSchedine(decision) {
             const grid = document.getElementById('schedineGrid');
             const schedine = predictions.schedine || {};
 
-            const config = [
-                { key: 'jackpot_classic', fallback: 'jackpot1', name: 'CLASSIC', emoji: '🔴', color: 'red' },
-                { key: 'jackpot_goals', fallback: 'jackpot2', name: 'GOALS', emoji: '🔥', color: 'orange' },
-                { key: 'jackpot_results', fallback: 'jackpot3', name: 'RESULTS', emoji: '💎', color: 'cyan' },
-                { key: 'jackpot_mega', fallback: 'jackpot4', name: 'MEGA', emoji: '🚀', color: 'pink' }
-            ];
+            // Config based on decision
+            let config;
+            if (decision === 'CAUTELA') {
+                config = [
+                    { key: 'jackpot_safe', name: 'SAFE', emoji: '🟡', color: 'yellow' },
+                    { key: 'jackpot_risk', name: 'RISK', emoji: '🟠', color: 'orange' }
+                ];
+            } else {
+                config = [
+                    { key: 'jackpot_classic', fallback: 'jackpot1', name: 'CLASSIC', emoji: '🔴', color: 'red' },
+                    { key: 'jackpot_goals', fallback: 'jackpot2', name: 'GOALS', emoji: '🔥', color: 'orange' },
+                    { key: 'jackpot_results', fallback: 'jackpot3', name: 'RESULTS', emoji: '💎', color: 'cyan' },
+                    { key: 'jackpot_mega', fallback: 'jackpot4', name: 'MEGA', emoji: '🚀', color: 'pink' }
+                ];
+            }
 
             let html = '';
             let hasSchedine = false;
 
             for (const c of config) {
-                const data = schedine[c.key] || schedine[c.fallback];
+                const data = schedine[c.key] || (c.fallback && schedine[c.fallback]);
                 if (!data || !data.selections || data.selections.length === 0) continue;
 
                 hasSchedine = true;
                 const totalOdds = data.totalOdds || calculateOdds(data.selections);
-                const stake = data.stake || 3;
+                const stake = data.stake || (decision === 'CAUTELA' ? 2 : 3);
                 const win = (parseFloat(totalOdds) * stake).toFixed(0);
 
                 html += `
                 <div class="glass card rounded-xl p-4 cursor-pointer border-l-4 border-${c.color}-500"
-                     onclick="showSchedina('${c.key}', '${c.fallback}')">
+                     onclick="showSchedina('${c.key}', '${c.fallback || c.key}')">
                     <div class="flex items-center justify-between mb-3">
                         <span class="px-2 py-1 rounded-full bg-${c.color}-600/30 text-${c.color}-400 text-xs font-medium">${c.name}</span>
                         <span class="text-xl">${c.emoji}</span>
