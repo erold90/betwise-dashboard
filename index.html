@@ -35,11 +35,13 @@
 
         * {
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background: linear-gradient(135deg, #0a0e17 0%, #111827 50%, #0a0e17 100%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .glass-card {
@@ -83,6 +85,17 @@
             transition: all 0.3s ease;
         }
 
+        /* Disable hover effects on touch devices */
+        @media (hover: none) {
+            .match-card:hover,
+            .schedina-card:hover {
+                transform: none;
+            }
+            .schedina-card:active {
+                transform: scale(0.98);
+            }
+        }
+
         .value-badge {
             animation: glow 2s ease-in-out infinite alternate;
         }
@@ -107,8 +120,18 @@
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
         }
 
+        /* Mobile scrollbar hide */
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
@@ -119,188 +142,229 @@
             background: #3b82f6;
             border-radius: 4px;
         }
+
+        /* Mobile table */
+        @media (max-width: 640px) {
+            .mobile-card-view {
+                display: block;
+            }
+            .desktop-table-view {
+                display: none;
+            }
+        }
+        @media (min-width: 641px) {
+            .mobile-card-view {
+                display: none;
+            }
+            .desktop-table-view {
+                display: block;
+            }
+        }
+
+        /* Safe area for notch phones */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            header {
+                padding-top: env(safe-area-inset-top);
+            }
+            footer {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+        /* Prevent text selection on buttons */
+        button, .schedina-card {
+            user-select: none;
+            -webkit-user-select: none;
+        }
     </style>
 </head>
 <body class="text-white">
     <!-- Header -->
     <header class="glass-card sticky top-0 z-50 border-b border-gray-800">
-        <div class="container mx-auto px-4 py-4">
+        <div class="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-xl sm:text-2xl">
                         🎯
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold">BetWise</h1>
-                        <p class="text-xs text-gray-400">Smart Weekend Predictor</p>
+                        <h1 class="text-lg sm:text-xl font-bold">BetWise</h1>
+                        <p class="text-xs text-gray-400 hidden sm:block">Smart Weekend Predictor</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 text-sm">
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <!-- Desktop: full update info -->
+                    <div class="hidden md:flex items-center gap-2 text-sm">
                         <span class="pulse-dot w-2 h-2 rounded-full bg-green-500"></span>
                         <span class="text-gray-400">Ultimo aggiornamento:</span>
                         <span id="lastUpdate" class="text-white font-medium">-</span>
                     </div>
-                    <button onclick="refreshData()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Mobile: just dot -->
+                    <div class="flex md:hidden items-center gap-1">
+                        <span class="pulse-dot w-2 h-2 rounded-full bg-green-500"></span>
+                        <span id="lastUpdateMobile" class="text-xs text-gray-400">-</span>
+                    </div>
+                    <button onclick="refreshData()" class="p-2 sm:px-4 sm:py-2 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition flex items-center gap-2">
+                        <svg class="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
-                        Aggiorna
+                        <span class="hidden sm:inline">Aggiorna</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-6">
+    <main class="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="glass-card rounded-xl p-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div class="glass-card rounded-xl p-3 sm:p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-sm">Partite Analizzate</p>
-                        <p id="totalMatches" class="text-2xl font-bold">-</p>
+                        <p class="text-gray-400 text-xs sm:text-sm">Partite</p>
+                        <p id="totalMatches" class="text-xl sm:text-2xl font-bold">-</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-blue-600/20 flex items-center justify-center">
-                        <span class="text-2xl">⚽</span>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-600/20 flex items-center justify-center">
+                        <span class="text-xl sm:text-2xl">⚽</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card rounded-xl p-4">
+            <div class="glass-card rounded-xl p-3 sm:p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-sm">Value Bets Trovate</p>
-                        <p id="valueBets" class="text-2xl font-bold text-green-500">-</p>
+                        <p class="text-gray-400 text-xs sm:text-sm">Value Bets</p>
+                        <p id="valueBets" class="text-xl sm:text-2xl font-bold text-green-500">-</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-green-600/20 flex items-center justify-center">
-                        <span class="text-2xl">💎</span>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-green-600/20 flex items-center justify-center">
+                        <span class="text-xl sm:text-2xl">💎</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card rounded-xl p-4">
+            <div class="glass-card rounded-xl p-3 sm:p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-sm">Win Rate Storico</p>
-                        <p id="winRate" class="text-2xl font-bold text-yellow-500">-</p>
+                        <p class="text-gray-400 text-xs sm:text-sm">Win Rate</p>
+                        <p id="winRate" class="text-xl sm:text-2xl font-bold text-yellow-500">-</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-yellow-600/20 flex items-center justify-center">
-                        <span class="text-2xl">📊</span>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-yellow-600/20 flex items-center justify-center">
+                        <span class="text-xl sm:text-2xl">📊</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card rounded-xl p-4">
+            <div class="glass-card rounded-xl p-3 sm:p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-400 text-sm">ROI Totale</p>
-                        <p id="totalROI" class="text-2xl font-bold text-purple-500">-</p>
+                        <p class="text-gray-400 text-xs sm:text-sm">ROI</p>
+                        <p id="totalROI" class="text-xl sm:text-2xl font-bold text-purple-500">-</p>
                     </div>
-                    <div class="w-12 h-12 rounded-xl bg-purple-600/20 flex items-center justify-center">
-                        <span class="text-2xl">💰</span>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-600/20 flex items-center justify-center">
+                        <span class="text-xl sm:text-2xl">💰</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Schedine Section -->
-        <section class="mb-8">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+        <section class="mb-6 sm:mb-8">
+            <h2 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
                 <span>🎰</span> Schedine Weekend
-                <span id="weekendDate" class="text-sm font-normal text-gray-400 ml-2">-</span>
+                <span id="weekendDate" class="text-xs sm:text-sm font-normal text-gray-400 ml-2">-</span>
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Mobile: horizontal scroll, Desktop: grid -->
+            <div class="flex md:grid md:grid-cols-4 gap-3 sm:gap-4 overflow-x-auto hide-scrollbar pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 snap-x snap-mandatory">
                 <!-- Schedina Sicura -->
-                <div class="schedina-card glass-card rounded-xl p-5 border-l-4 border-green-500 glow-green cursor-pointer" onclick="showSchedina('sicura')">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-3 py-1 rounded-full bg-green-600/30 text-green-400 text-xs font-medium">SICURA</span>
-                        <span class="text-2xl">🟢</span>
+                <div class="schedina-card glass-card rounded-xl p-4 sm:p-5 border-l-4 border-green-500 glow-green cursor-pointer min-w-[260px] sm:min-w-0 flex-shrink-0 md:flex-shrink snap-start" onclick="showSchedina('sicura')">
+                    <div class="flex items-center justify-between mb-2 sm:mb-3">
+                        <span class="px-2 sm:px-3 py-1 rounded-full bg-green-600/30 text-green-400 text-xs font-medium">SICURA</span>
+                        <span class="text-xl sm:text-2xl">🟢</span>
                     </div>
-                    <h3 class="text-lg font-bold mb-1">3 Selezioni</h3>
-                    <p class="text-gray-400 text-sm mb-3">Quote basse, alta probabilità</p>
+                    <h3 class="text-base sm:text-lg font-bold mb-1">3 Selezioni</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3">Quote basse, alta probabilità</p>
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-xs text-gray-500">Quota Totale</p>
-                            <p id="quotaSicura" class="text-xl font-bold text-green-400">-</p>
+                            <p class="text-xs text-gray-500">Quota</p>
+                            <p id="quotaSicura" class="text-lg sm:text-xl font-bold text-green-400">-</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Win Rate</p>
-                            <p id="winRateSicura" class="text-xl font-bold">~45%</p>
+                            <p id="winRateSicura" class="text-lg sm:text-xl font-bold">~45%</p>
                         </div>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-gray-700">
-                        <p class="text-xs text-gray-400">Puntata consigliata: <span class="text-white font-medium">4€</span></p>
+                    <div class="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-700">
+                        <p class="text-xs text-gray-400">Puntata: <span class="text-white font-medium">4€</span></p>
                         <p class="text-sm text-green-400 font-medium" id="vincitaSicura">Vincita: -</p>
                     </div>
                 </div>
 
                 <!-- Schedina Media -->
-                <div class="schedina-card glass-card rounded-xl p-5 border-l-4 border-yellow-500 glow-yellow cursor-pointer" onclick="showSchedina('media')">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-3 py-1 rounded-full bg-yellow-600/30 text-yellow-400 text-xs font-medium">MEDIA</span>
-                        <span class="text-2xl">🟡</span>
+                <div class="schedina-card glass-card rounded-xl p-4 sm:p-5 border-l-4 border-yellow-500 glow-yellow cursor-pointer min-w-[260px] sm:min-w-0 flex-shrink-0 md:flex-shrink snap-start" onclick="showSchedina('media')">
+                    <div class="flex items-center justify-between mb-2 sm:mb-3">
+                        <span class="px-2 sm:px-3 py-1 rounded-full bg-yellow-600/30 text-yellow-400 text-xs font-medium">MEDIA</span>
+                        <span class="text-xl sm:text-2xl">🟡</span>
                     </div>
-                    <h3 class="text-lg font-bold mb-1">5 Selezioni</h3>
-                    <p class="text-gray-400 text-sm mb-3">Bilanciata rischio/rendimento</p>
+                    <h3 class="text-base sm:text-lg font-bold mb-1">5 Selezioni</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3">Bilanciata rischio/rendimento</p>
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-xs text-gray-500">Quota Totale</p>
-                            <p id="quotaMedia" class="text-xl font-bold text-yellow-400">-</p>
+                            <p class="text-xs text-gray-500">Quota</p>
+                            <p id="quotaMedia" class="text-lg sm:text-xl font-bold text-yellow-400">-</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Win Rate</p>
-                            <p id="winRateMedia" class="text-xl font-bold">~20%</p>
+                            <p id="winRateMedia" class="text-lg sm:text-xl font-bold">~20%</p>
                         </div>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-gray-700">
-                        <p class="text-xs text-gray-400">Puntata consigliata: <span class="text-white font-medium">3€</span></p>
+                    <div class="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-700">
+                        <p class="text-xs text-gray-400">Puntata: <span class="text-white font-medium">3€</span></p>
                         <p class="text-sm text-yellow-400 font-medium" id="vincitaMedia">Vincita: -</p>
                     </div>
                 </div>
 
                 <!-- Schedina Jackpot -->
-                <div class="schedina-card glass-card rounded-xl p-5 border-l-4 border-red-500 glow-red cursor-pointer" onclick="showSchedina('jackpot')">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-3 py-1 rounded-full bg-red-600/30 text-red-400 text-xs font-medium">JACKPOT</span>
-                        <span class="text-2xl">🔴</span>
+                <div class="schedina-card glass-card rounded-xl p-4 sm:p-5 border-l-4 border-red-500 glow-red cursor-pointer min-w-[260px] sm:min-w-0 flex-shrink-0 md:flex-shrink snap-start" onclick="showSchedina('jackpot')">
+                    <div class="flex items-center justify-between mb-2 sm:mb-3">
+                        <span class="px-2 sm:px-3 py-1 rounded-full bg-red-600/30 text-red-400 text-xs font-medium">JACKPOT</span>
+                        <span class="text-xl sm:text-2xl">🔴</span>
                     </div>
-                    <h3 class="text-lg font-bold mb-1">12+ Selezioni</h3>
-                    <p class="text-gray-400 text-sm mb-3">Alta quota, sogno da 2000€+</p>
+                    <h3 class="text-base sm:text-lg font-bold mb-1">12+ Selezioni</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3">Sogno da 1000€+</p>
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-xs text-gray-500">Quota Totale</p>
-                            <p id="quotaJackpot" class="text-xl font-bold text-red-400">-</p>
+                            <p class="text-xs text-gray-500">Quota</p>
+                            <p id="quotaJackpot" class="text-lg sm:text-xl font-bold text-red-400">-</p>
                         </div>
                         <div>
                             <p class="text-xs text-gray-500">Win Rate</p>
-                            <p id="winRateJackpot" class="text-xl font-bold">~0.1%</p>
+                            <p id="winRateJackpot" class="text-lg sm:text-xl font-bold">~0.1%</p>
                         </div>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-gray-700">
-                        <p class="text-xs text-gray-400">Puntata consigliata: <span class="text-white font-medium">1€</span></p>
+                    <div class="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-700">
+                        <p class="text-xs text-gray-400">Puntata: <span class="text-white font-medium">1€</span></p>
                         <p class="text-sm text-red-400 font-medium" id="vincitaJackpot">Vincita: -</p>
                     </div>
                 </div>
 
                 <!-- Custom Builder -->
-                <div class="schedina-card glass-card rounded-xl p-5 border-l-4 border-purple-500 glow-purple cursor-pointer" onclick="showCustomBuilder()">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-3 py-1 rounded-full bg-purple-600/30 text-purple-400 text-xs font-medium">CUSTOM</span>
-                        <span class="text-2xl">🛠️</span>
+                <div class="schedina-card glass-card rounded-xl p-4 sm:p-5 border-l-4 border-purple-500 glow-purple cursor-pointer min-w-[260px] sm:min-w-0 flex-shrink-0 md:flex-shrink snap-start" onclick="showCustomBuilder()">
+                    <div class="flex items-center justify-between mb-2 sm:mb-3">
+                        <span class="px-2 sm:px-3 py-1 rounded-full bg-purple-600/30 text-purple-400 text-xs font-medium">CUSTOM</span>
+                        <span class="text-xl sm:text-2xl">🛠️</span>
                     </div>
-                    <h3 class="text-lg font-bold mb-1">Builder</h3>
-                    <p class="text-gray-400 text-sm mb-3">Crea la tua schedina personalizzata</p>
-                    <div class="flex items-center justify-center py-4">
-                        <div class="w-16 h-16 rounded-full border-2 border-dashed border-purple-500 flex items-center justify-center">
-                            <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <h3 class="text-base sm:text-lg font-bold mb-1">Builder</h3>
+                    <p class="text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3">Crea la tua schedina</p>
+                    <div class="flex items-center justify-center py-3 sm:py-4">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-purple-500 flex items-center justify-center">
+                            <svg class="w-7 h-7 sm:w-8 sm:h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                         </div>
                     </div>
-                    <div class="mt-3 pt-3 border-t border-gray-700">
+                    <div class="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-700">
                         <p class="text-xs text-gray-400">Selezioni: <span class="text-white font-medium" id="customCount">0</span></p>
                         <p class="text-sm text-purple-400 font-medium">Clicca per iniziare</p>
                     </div>
@@ -309,107 +373,111 @@
         </section>
 
         <!-- League Tabs -->
-        <section class="mb-6">
-            <div class="flex items-center gap-2 overflow-x-auto pb-2" id="leagueTabs">
-                <button class="tab-active px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" onclick="filterLeague('all')">
+        <section class="mb-4 sm:mb-6 -mx-3 px-3 sm:mx-0 sm:px-0">
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2" id="leagueTabs">
+                <button class="tab-active px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap" onclick="filterLeague('all')">
                     🌍 Tutte
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('premier')">
-                    🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('premier')">
+                    🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('laliga')">
-                    🇪🇸 La Liga
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('laliga')">
+                    🇪🇸 Liga
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('seriea')">
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('seriea')">
                     🇮🇹 Serie A
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('bundesliga')">
-                    🇩🇪 Bundesliga
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('bundesliga')">
+                    🇩🇪 Bundes
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('ligue1')">
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('ligue1')">
                     🇫🇷 Ligue 1
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('eredivisie')">
-                    🇳🇱 Eredivisie
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('eredivisie')">
+                    🇳🇱 Erediv
                 </button>
-                <button class="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600" onclick="filterLeague('primeira')">
-                    🇵🇹 Primeira Liga
+                <button class="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap bg-dark-700 hover:bg-dark-600 active:bg-dark-600" onclick="filterLeague('primeira')">
+                    🇵🇹 Primeira
                 </button>
             </div>
         </section>
 
         <!-- Matches Section -->
-        <section class="mb-8">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+        <section class="mb-6 sm:mb-8">
+            <h2 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
                 <span>⚽</span> Partite Weekend
             </h2>
 
-            <div id="matchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div id="matchesContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
                 <!-- Matches will be loaded here -->
-                <div class="glass-card rounded-xl p-6 loading-skeleton h-48"></div>
-                <div class="glass-card rounded-xl p-6 loading-skeleton h-48"></div>
-                <div class="glass-card rounded-xl p-6 loading-skeleton h-48"></div>
-                <div class="glass-card rounded-xl p-6 loading-skeleton h-48"></div>
+                <div class="glass-card rounded-xl p-4 sm:p-6 loading-skeleton h-40 sm:h-48"></div>
+                <div class="glass-card rounded-xl p-4 sm:p-6 loading-skeleton h-40 sm:h-48"></div>
+                <div class="glass-card rounded-xl p-4 sm:p-6 loading-skeleton h-40 sm:h-48 hidden sm:block"></div>
+                <div class="glass-card rounded-xl p-4 sm:p-6 loading-skeleton h-40 sm:h-48 hidden sm:block"></div>
             </div>
         </section>
 
         <!-- Tracking Section -->
-        <section class="mb-8">
-            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+        <section class="mb-6 sm:mb-8">
+            <h2 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center gap-2">
                 <span>📈</span> Storico & Tracking
             </h2>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <!-- Performance Chart -->
-                <div class="glass-card rounded-xl p-5 lg:col-span-2">
-                    <h3 class="font-medium mb-4">Performance Ultime 8 Settimane</h3>
-                    <canvas id="performanceChart" height="200"></canvas>
-                </div>
-
-                <!-- Quick Stats -->
-                <div class="glass-card rounded-xl p-5">
-                    <h3 class="font-medium mb-4">Statistiche Rapide</h3>
-                    <div class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+                <!-- Quick Stats - First on mobile -->
+                <div class="glass-card rounded-xl p-4 sm:p-5 order-1 lg:order-2">
+                    <h3 class="font-medium mb-3 sm:mb-4 text-sm sm:text-base">Statistiche Rapide</h3>
+                    <div class="grid grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-400">Schedine Giocate</span>
+                            <span class="text-gray-400 text-sm">Giocate</span>
                             <span id="totalPlayed" class="font-bold">0</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-400">Schedine Vinte</span>
+                            <span class="text-gray-400 text-sm">Vinte</span>
                             <span id="totalWon" class="font-bold text-green-400">0</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-400">Totale Puntato</span>
+                            <span class="text-gray-400 text-sm">Puntato</span>
                             <span id="totalStaked" class="font-bold">€0</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-400">Totale Vinto</span>
+                            <span class="text-gray-400 text-sm">Vinto</span>
                             <span id="totalWonAmount" class="font-bold text-green-400">€0</span>
                         </div>
-                        <div class="border-t border-gray-700 pt-4 flex items-center justify-between">
-                            <span class="text-gray-400">Profitto/Perdita</span>
-                            <span id="profitLoss" class="font-bold text-xl">€0</span>
+                        <div class="col-span-2 lg:col-span-1 border-t border-gray-700 pt-3 sm:pt-4 flex items-center justify-between">
+                            <span class="text-gray-400 text-sm">Profitto/Perdita</span>
+                            <span id="profitLoss" class="font-bold text-lg sm:text-xl">€0</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="glass-card rounded-xl p-4 sm:p-5 lg:col-span-2 order-2 lg:order-1">
+                    <h3 class="font-medium mb-3 sm:mb-4 text-sm sm:text-base">Performance Ultime 8 Settimane</h3>
+                    <div class="h-[180px] sm:h-[200px]">
+                        <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- My Bets Tracking -->
-        <section class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold flex items-center gap-2">
-                    <span>📝</span> Le Mie Scommesse
+        <section class="mb-6 sm:mb-8">
+            <div class="flex items-center justify-between mb-3 sm:mb-4">
+                <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2">
+                    <span>📝</span> <span class="hidden sm:inline">Le Mie</span> Scommesse
                 </h2>
-                <button onclick="showAddBetModal()" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 transition flex items-center gap-2">
+                <button onclick="showAddBetModal()" class="px-3 sm:px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 active:bg-green-800 transition flex items-center gap-1 sm:gap-2 text-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    Aggiungi Scommessa
+                    <span class="hidden sm:inline">Aggiungi</span>
+                    <span class="sm:hidden">+</span>
                 </button>
             </div>
 
-            <div class="glass-card rounded-xl overflow-hidden">
+            <!-- Desktop Table -->
+            <div class="glass-card rounded-xl overflow-hidden desktop-table-view">
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-dark-700">
@@ -426,11 +494,18 @@
                         <tbody id="betsTableBody" class="divide-y divide-gray-800">
                             <tr>
                                 <td colspan="7" class="px-4 py-8 text-center text-gray-500">
-                                    Nessuna scommessa registrata. Clicca "Aggiungi Scommessa" per iniziare.
+                                    Nessuna scommessa registrata. Clicca "Aggiungi" per iniziare.
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-card-view space-y-3" id="betsCardsContainer">
+                <div class="glass-card rounded-xl p-4 text-center text-gray-500 text-sm">
+                    Nessuna scommessa registrata. Clicca "+" per iniziare.
                 </div>
             </div>
         </section>

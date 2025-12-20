@@ -479,7 +479,13 @@ function updateStats() {
     document.getElementById('weekendDate').textContent =
         `${saturday.getDate()}/${saturday.getMonth() + 1} - ${sunday.getDate()}/${sunday.getMonth() + 1}`;
 
-    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('it-IT');
+    // Update last update (desktop and mobile)
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent = now.toLocaleString('it-IT');
+    const mobileUpdate = document.getElementById('lastUpdateMobile');
+    if (mobileUpdate) {
+        mobileUpdate.textContent = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    }
 }
 
 // Update schedine cards
@@ -712,6 +718,7 @@ function setupEventListeners() {
 // Update bets table
 function updateBetsTable() {
     const tbody = document.getElementById('betsTableBody');
+    const cardsContainer = document.getElementById('betsCardsContainer');
 
     if (state.myBets.length === 0) {
         tbody.innerHTML = `
@@ -721,9 +728,15 @@ function updateBetsTable() {
                 </td>
             </tr>
         `;
+        cardsContainer.innerHTML = `
+            <div class="glass-card rounded-xl p-4 text-center text-gray-500 text-sm">
+                Nessuna scommessa registrata. Clicca "+" per iniziare.
+            </div>
+        `;
         return;
     }
 
+    // Desktop table
     tbody.innerHTML = state.myBets.map(bet => {
         const pl = bet.result === 'won' ? (bet.stake * bet.odds - bet.stake).toFixed(2) :
                    bet.result === 'lost' ? (-bet.stake).toFixed(2) : '-';
@@ -747,6 +760,52 @@ function updateBetsTable() {
                 </td>
                 <td class="px-4 py-3 ${plClass}">${pl !== '-' ? '€' + pl : pl}</td>
             </tr>
+        `;
+    }).join('');
+
+    // Mobile cards
+    cardsContainer.innerHTML = state.myBets.map(bet => {
+        const pl = bet.result === 'won' ? (bet.stake * bet.odds - bet.stake).toFixed(2) :
+                   bet.result === 'lost' ? (-bet.stake).toFixed(2) : '-';
+        const plClass = bet.result === 'won' ? 'text-green-400' :
+                       bet.result === 'lost' ? 'text-red-400' : 'text-gray-400';
+        const resultBadge = bet.result === 'won' ? 'bg-green-600/30 text-green-400' :
+                          bet.result === 'lost' ? 'bg-red-600/30 text-red-400' :
+                          'bg-yellow-600/30 text-yellow-400';
+        const borderColor = bet.result === 'won' ? 'border-green-500' :
+                           bet.result === 'lost' ? 'border-red-500' : 'border-yellow-500';
+        const typeEmoji = bet.type === 'sicura' ? '🟢' : bet.type === 'media' ? '🟡' : bet.type === 'jackpot' ? '🔴' : '🛠️';
+
+        return `
+            <div class="glass-card rounded-xl p-4 border-l-4 ${borderColor}">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                        <span>${typeEmoji}</span>
+                        <span class="capitalize font-medium">${bet.type}</span>
+                    </div>
+                    <span class="px-2 py-1 rounded-full text-xs ${resultBadge}">
+                        ${bet.result === 'pending' ? 'In Attesa' : bet.result === 'won' ? 'Vinta' : 'Persa'}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between text-sm text-gray-400 mb-2">
+                    <span>${bet.date}</span>
+                    <span>${bet.selections} selezioni</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-gray-500">Quota</span>
+                        <p class="font-bold">${bet.odds.toFixed(2)}</p>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-xs text-gray-500">Puntata</span>
+                        <p class="font-bold">€${bet.stake.toFixed(2)}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-gray-500">P/L</span>
+                        <p class="font-bold ${plClass}">${pl !== '-' ? '€' + pl : pl}</p>
+                    </div>
+                </div>
+            </div>
         `;
     }).join('');
 
