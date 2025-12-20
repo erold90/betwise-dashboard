@@ -1,0 +1,836 @@
+{
+  "generated_at": "2025-12-20T16:15:00",
+  "weekend": "21/12 - 22/12",
+  "matches": [
+    {
+      "id": "premier_0",
+      "league": "premier",
+      "league_name": "Premier League",
+      "league_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "home_team": "Liverpool",
+      "away_team": "Tottenham",
+      "date": "2025-12-21",
+      "time": "13:30",
+      "prediction": {
+        "homeWin": 58,
+        "draw": 24,
+        "awayWin": 18,
+        "over25": 72,
+        "over15": 88,
+        "over05": 96,
+        "btts": 65,
+        "likelyScore": [2, 1],
+        "homeXG": "2.15",
+        "awayXG": "1.22"
+      },
+      "odds": {
+        "home": 1.72,
+        "draw": 4.20,
+        "away": 5.50,
+        "over25": 1.45,
+        "under25": 2.80,
+        "over15": 1.18,
+        "bttsYes": 1.60,
+        "bttsNo": 2.30,
+        "dc1x": 1.22,
+        "dc12": 1.35,
+        "dcx2": 2.10
+      },
+      "value_bets": [
+        {"market": "Over 2.5", "odds": 1.45, "probability": 72, "edge": 5},
+        {"market": "BTTS Si", "odds": 1.60, "probability": 65, "edge": 4}
+      ],
+      "confidence": 82
+    },
+    {
+      "id": "premier_1",
+      "league": "premier",
+      "league_name": "Premier League",
+      "league_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "home_team": "Manchester City",
+      "away_team": "Crystal Palace",
+      "date": "2025-12-21",
+      "time": "16:00",
+      "prediction": {
+        "homeWin": 78,
+        "draw": 14,
+        "awayWin": 8,
+        "over25": 75,
+        "over15": 92,
+        "over05": 98,
+        "btts": 48,
+        "likelyScore": [3, 0],
+        "homeXG": "2.85",
+        "awayXG": "0.65"
+      },
+      "odds": {
+        "home": 1.28,
+        "draw": 6.50,
+        "away": 11.00,
+        "over25": 1.40,
+        "under25": 3.00,
+        "over15": 1.12,
+        "bttsYes": 2.10,
+        "bttsNo": 1.75,
+        "dc1x": 1.08,
+        "dc12": 1.15,
+        "dcx2": 3.20
+      },
+      "value_bets": [
+        {"market": "Over 1.5", "odds": 1.12, "probability": 92, "edge": 3}
+      ],
+      "confidence": 88
+    },
+    {
+      "id": "premier_2",
+      "league": "premier",
+      "league_name": "Premier League",
+      "league_flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+      "home_team": "Arsenal",
+      "away_team": "Brighton",
+      "date": "2025-12-21",
+      "time": "18:30",
+      "prediction": {
+        "homeWin": 62,
+        "draw": 22,
+        "awayWin": 16,
+        "over25": 58,
+        "over15": 82,
+        "over05": 94,
+        "btts": 55,
+        "likelyScore": [2, 1],
+        "homeXG": "1.95",
+        "awayXG": "1.10"
+      },
+      "odds": {
+        "home": 1.65,
+        "draw": 4.50,
+        "away": 6.00,
+        "over25": 1.75,
+        "under25": 2.10,
+        "over15": 1.25,
+        "bttsYes": 1.85,
+        "bttsNo": 1.95,
+        "dc1x": 1.18,
+        "dc12": 1.30,
+        "dcx2": 2.35
+      },
+      "value_bets": [
+        {"market": "DC 1X", "odds": 1.18, "probability": 84, "edge": 4}
+      ],
+      "confidence": 78
+    },
+    {
+      "id": "laliga_0",
+      "league": "laliga",
+      "league_name": "La Liga",
+      "league_flag": "🇪🇸",
+      "home_team": "Real Madrid",
+      "away_team": "Getafe",
+      "date": "2025-12-21",
+      "time": "21:00",
+      "prediction": {
+        "homeWin": 82,
+        "draw": 12,
+        "awayWin": 6,
+        "over25": 68,
+        "over15": 90,
+        "over05": 97,
+        "btts": 42,
+        "likelyScore": [3, 0],
+        "homeXG": "2.65",
+        "awayXG": "0.55"
+      },
+      "odds": {
+        "home": 1.22,
+        "draw": 7.00,
+        "away": 14.00,
+        "over25": 1.52,
+        "under25": 2.55,
+        "over15": 1.15,
+        "bttsYes": 2.40,
+        "bttsNo": 1.55,
+        "dc1x": 1.06,
+        "dc12": 1.12,
+        "dcx2": 3.80
+      },
+      "value_bets": [
+        {"market": "Over 1.5", "odds": 1.15, "probability": 90, "edge": 4}
+      ],
+      "confidence": 90
+    },
+    {
+      "id": "laliga_1",
+      "league": "laliga",
+      "league_name": "La Liga",
+      "league_flag": "🇪🇸",
+      "home_team": "Barcelona",
+      "away_team": "Las Palmas",
+      "date": "2025-12-22",
+      "time": "16:15",
+      "prediction": {
+        "homeWin": 80,
+        "draw": 13,
+        "awayWin": 7,
+        "over25": 72,
+        "over15": 91,
+        "over05": 98,
+        "btts": 45,
+        "likelyScore": [3, 1],
+        "homeXG": "2.75",
+        "awayXG": "0.72"
+      },
+      "odds": {
+        "home": 1.25,
+        "draw": 6.80,
+        "away": 12.00,
+        "over25": 1.45,
+        "under25": 2.75,
+        "over15": 1.12,
+        "bttsYes": 2.25,
+        "bttsNo": 1.62,
+        "dc1x": 1.07,
+        "dc12": 1.14,
+        "dcx2": 3.50
+      },
+      "value_bets": [
+        {"market": "Over 2.5", "odds": 1.45, "probability": 72, "edge": 5}
+      ],
+      "confidence": 88
+    },
+    {
+      "id": "seriea_0",
+      "league": "seriea",
+      "league_name": "Serie A",
+      "league_flag": "🇮🇹",
+      "home_team": "Inter",
+      "away_team": "Venezia",
+      "date": "2025-12-21",
+      "time": "15:00",
+      "prediction": {
+        "homeWin": 85,
+        "draw": 10,
+        "awayWin": 5,
+        "over25": 65,
+        "over15": 88,
+        "over05": 96,
+        "btts": 38,
+        "likelyScore": [3, 0],
+        "homeXG": "2.55",
+        "awayXG": "0.48"
+      },
+      "odds": {
+        "home": 1.18,
+        "draw": 8.00,
+        "away": 16.00,
+        "over25": 1.58,
+        "under25": 2.40,
+        "over15": 1.18,
+        "bttsYes": 2.65,
+        "bttsNo": 1.45,
+        "dc1x": 1.05,
+        "dc12": 1.10,
+        "dcx2": 4.20
+      },
+      "value_bets": [
+        {"market": "DC 1X", "odds": 1.05, "probability": 95, "edge": 3}
+      ],
+      "confidence": 92
+    },
+    {
+      "id": "seriea_1",
+      "league": "seriea",
+      "league_name": "Serie A",
+      "league_flag": "🇮🇹",
+      "home_team": "Napoli",
+      "away_team": "Monza",
+      "date": "2025-12-21",
+      "time": "18:00",
+      "prediction": {
+        "homeWin": 75,
+        "draw": 16,
+        "awayWin": 9,
+        "over25": 55,
+        "over15": 82,
+        "over05": 94,
+        "btts": 45,
+        "likelyScore": [2, 0],
+        "homeXG": "2.10",
+        "awayXG": "0.68"
+      },
+      "odds": {
+        "home": 1.35,
+        "draw": 5.50,
+        "away": 9.00,
+        "over25": 1.85,
+        "under25": 1.95,
+        "over15": 1.25,
+        "bttsYes": 2.20,
+        "bttsNo": 1.65,
+        "dc1x": 1.10,
+        "dc12": 1.18,
+        "dcx2": 3.00
+      },
+      "value_bets": [
+        {"market": "Over 1.5", "odds": 1.25, "probability": 82, "edge": 3}
+      ],
+      "confidence": 85
+    },
+    {
+      "id": "seriea_2",
+      "league": "seriea",
+      "league_name": "Serie A",
+      "league_flag": "🇮🇹",
+      "home_team": "Juventus",
+      "away_team": "Cagliari",
+      "date": "2025-12-22",
+      "time": "15:00",
+      "prediction": {
+        "homeWin": 68,
+        "draw": 20,
+        "awayWin": 12,
+        "over25": 48,
+        "over15": 78,
+        "over05": 92,
+        "btts": 42,
+        "likelyScore": [2, 0],
+        "homeXG": "1.75",
+        "awayXG": "0.65"
+      },
+      "odds": {
+        "home": 1.48,
+        "draw": 4.80,
+        "away": 7.50,
+        "over25": 2.10,
+        "under25": 1.75,
+        "over15": 1.32,
+        "bttsYes": 2.40,
+        "bttsNo": 1.55,
+        "dc1x": 1.15,
+        "dc12": 1.25,
+        "dcx2": 2.60
+      },
+      "value_bets": [
+        {"market": "DC 1X", "odds": 1.15, "probability": 88, "edge": 4}
+      ],
+      "confidence": 80
+    },
+    {
+      "id": "bundesliga_0",
+      "league": "bundesliga",
+      "league_name": "Bundesliga",
+      "league_flag": "🇩🇪",
+      "home_team": "Bayern Monaco",
+      "away_team": "Hoffenheim",
+      "date": "2025-12-21",
+      "time": "15:30",
+      "prediction": {
+        "homeWin": 82,
+        "draw": 12,
+        "awayWin": 6,
+        "over25": 78,
+        "over15": 94,
+        "over05": 99,
+        "btts": 58,
+        "likelyScore": [3, 1],
+        "homeXG": "3.05",
+        "awayXG": "0.92"
+      },
+      "odds": {
+        "home": 1.22,
+        "draw": 7.50,
+        "away": 13.00,
+        "over25": 1.35,
+        "under25": 3.20,
+        "over15": 1.08,
+        "bttsYes": 1.75,
+        "bttsNo": 2.05,
+        "dc1x": 1.06,
+        "dc12": 1.12,
+        "dcx2": 3.80
+      },
+      "value_bets": [
+        {"market": "Over 2.5", "odds": 1.35, "probability": 78, "edge": 6},
+        {"market": "BTTS Si", "odds": 1.75, "probability": 58, "edge": 3}
+      ],
+      "confidence": 90
+    },
+    {
+      "id": "bundesliga_1",
+      "league": "bundesliga",
+      "league_name": "Bundesliga",
+      "league_flag": "🇩🇪",
+      "home_team": "Borussia Dortmund",
+      "away_team": "Union Berlin",
+      "date": "2025-12-21",
+      "time": "18:30",
+      "prediction": {
+        "homeWin": 62,
+        "draw": 22,
+        "awayWin": 16,
+        "over25": 65,
+        "over15": 85,
+        "over05": 95,
+        "btts": 62,
+        "likelyScore": [2, 1],
+        "homeXG": "2.15",
+        "awayXG": "1.05"
+      },
+      "odds": {
+        "home": 1.62,
+        "draw": 4.50,
+        "away": 5.80,
+        "over25": 1.58,
+        "under25": 2.40,
+        "over15": 1.20,
+        "bttsYes": 1.65,
+        "bttsNo": 2.20,
+        "dc1x": 1.20,
+        "dc12": 1.32,
+        "dcx2": 2.25
+      },
+      "value_bets": [
+        {"market": "BTTS Si", "odds": 1.65, "probability": 62, "edge": 4},
+        {"market": "Over 2.5", "odds": 1.58, "probability": 65, "edge": 3}
+      ],
+      "confidence": 78
+    },
+    {
+      "id": "bundesliga_2",
+      "league": "bundesliga",
+      "league_name": "Bundesliga",
+      "league_flag": "🇩🇪",
+      "home_team": "Leverkusen",
+      "away_team": "Mainz",
+      "date": "2025-12-22",
+      "time": "15:30",
+      "prediction": {
+        "homeWin": 72,
+        "draw": 18,
+        "awayWin": 10,
+        "over25": 70,
+        "over15": 88,
+        "over05": 96,
+        "btts": 55,
+        "likelyScore": [3, 1],
+        "homeXG": "2.45",
+        "awayXG": "0.88"
+      },
+      "odds": {
+        "home": 1.40,
+        "draw": 5.20,
+        "away": 8.50,
+        "over25": 1.48,
+        "under25": 2.65,
+        "over15": 1.15,
+        "bttsYes": 1.85,
+        "bttsNo": 1.95,
+        "dc1x": 1.10,
+        "dc12": 1.20,
+        "dcx2": 2.85
+      },
+      "value_bets": [
+        {"market": "Over 2.5", "odds": 1.48, "probability": 70, "edge": 4}
+      ],
+      "confidence": 85
+    },
+    {
+      "id": "ligue1_0",
+      "league": "ligue1",
+      "league_name": "Ligue 1",
+      "league_flag": "🇫🇷",
+      "home_team": "PSG",
+      "away_team": "Montpellier",
+      "date": "2025-12-21",
+      "time": "21:00",
+      "prediction": {
+        "homeWin": 88,
+        "draw": 8,
+        "awayWin": 4,
+        "over25": 75,
+        "over15": 92,
+        "over05": 98,
+        "btts": 35,
+        "likelyScore": [4, 0],
+        "homeXG": "3.25",
+        "awayXG": "0.45"
+      },
+      "odds": {
+        "home": 1.14,
+        "draw": 9.00,
+        "away": 18.00,
+        "over25": 1.40,
+        "under25": 2.90,
+        "over15": 1.10,
+        "bttsYes": 2.85,
+        "bttsNo": 1.40,
+        "dc1x": 1.04,
+        "dc12": 1.08,
+        "dcx2": 4.80
+      },
+      "value_bets": [
+        {"market": "Over 1.5", "odds": 1.10, "probability": 92, "edge": 3}
+      ],
+      "confidence": 92
+    },
+    {
+      "id": "eredivisie_0",
+      "league": "eredivisie",
+      "league_name": "Eredivisie",
+      "league_flag": "🇳🇱",
+      "home_team": "PSV",
+      "away_team": "Twente",
+      "date": "2025-12-22",
+      "time": "14:30",
+      "prediction": {
+        "homeWin": 68,
+        "draw": 20,
+        "awayWin": 12,
+        "over25": 78,
+        "over15": 92,
+        "over05": 98,
+        "btts": 72,
+        "likelyScore": [3, 1],
+        "homeXG": "2.65",
+        "awayXG": "1.15"
+      },
+      "odds": {
+        "home": 1.48,
+        "draw": 4.80,
+        "away": 7.00,
+        "over25": 1.35,
+        "under25": 3.20,
+        "over15": 1.10,
+        "bttsYes": 1.45,
+        "bttsNo": 2.65,
+        "dc1x": 1.15,
+        "dc12": 1.25,
+        "dcx2": 2.55
+      },
+      "value_bets": [
+        {"market": "Over 2.5", "odds": 1.35, "probability": 78, "edge": 6},
+        {"market": "BTTS Si", "odds": 1.45, "probability": 72, "edge": 5}
+      ],
+      "confidence": 82
+    },
+    {
+      "id": "eredivisie_1",
+      "league": "eredivisie",
+      "league_name": "Eredivisie",
+      "league_flag": "🇳🇱",
+      "home_team": "Ajax",
+      "away_team": "Utrecht",
+      "date": "2025-12-22",
+      "time": "16:45",
+      "prediction": {
+        "homeWin": 62,
+        "draw": 22,
+        "awayWin": 16,
+        "over25": 72,
+        "over15": 88,
+        "over05": 96,
+        "btts": 68,
+        "likelyScore": [2, 1],
+        "homeXG": "2.25",
+        "awayXG": "1.08"
+      },
+      "odds": {
+        "home": 1.62,
+        "draw": 4.50,
+        "away": 5.50,
+        "over25": 1.45,
+        "under25": 2.75,
+        "over15": 1.18,
+        "bttsYes": 1.52,
+        "bttsNo": 2.50,
+        "dc1x": 1.20,
+        "dc12": 1.32,
+        "dcx2": 2.25
+      },
+      "value_bets": [
+        {"market": "BTTS Si", "odds": 1.52, "probability": 68, "edge": 4},
+        {"market": "Over 2.5", "odds": 1.45, "probability": 72, "edge": 5}
+      ],
+      "confidence": 78
+    },
+    {
+      "id": "primeira_0",
+      "league": "primeira",
+      "league_name": "Primeira Liga",
+      "league_flag": "🇵🇹",
+      "home_team": "Benfica",
+      "away_team": "Braga",
+      "date": "2025-12-22",
+      "time": "18:00",
+      "prediction": {
+        "homeWin": 58,
+        "draw": 24,
+        "awayWin": 18,
+        "over25": 62,
+        "over15": 85,
+        "over05": 95,
+        "btts": 58,
+        "likelyScore": [2, 1],
+        "homeXG": "1.95",
+        "awayXG": "1.05"
+      },
+      "odds": {
+        "home": 1.75,
+        "draw": 4.20,
+        "away": 5.00,
+        "over25": 1.65,
+        "under25": 2.25,
+        "over15": 1.22,
+        "bttsYes": 1.75,
+        "bttsNo": 2.05,
+        "dc1x": 1.25,
+        "dc12": 1.35,
+        "dcx2": 2.10
+      },
+      "value_bets": [
+        {"market": "Over 1.5", "odds": 1.22, "probability": 85, "edge": 4}
+      ],
+      "confidence": 75
+    },
+    {
+      "id": "primeira_1",
+      "league": "primeira",
+      "league_name": "Primeira Liga",
+      "league_flag": "🇵🇹",
+      "home_team": "Porto",
+      "away_team": "Guimaraes",
+      "date": "2025-12-22",
+      "time": "20:30",
+      "prediction": {
+        "homeWin": 65,
+        "draw": 22,
+        "awayWin": 13,
+        "over25": 58,
+        "over15": 82,
+        "over05": 94,
+        "btts": 52,
+        "likelyScore": [2, 1],
+        "homeXG": "2.05",
+        "awayXG": "0.85"
+      },
+      "odds": {
+        "home": 1.55,
+        "draw": 4.50,
+        "away": 6.50,
+        "over25": 1.75,
+        "under25": 2.10,
+        "over15": 1.25,
+        "bttsYes": 1.95,
+        "bttsNo": 1.85,
+        "dc1x": 1.18,
+        "dc12": 1.28,
+        "dcx2": 2.40
+      },
+      "value_bets": [
+        {"market": "DC 1X", "odds": 1.18, "probability": 87, "edge": 4}
+      ],
+      "confidence": 80
+    }
+  ],
+  "schedine": {
+    "sicura": {
+      "selections": [
+        {
+          "match": "Inter vs Venezia",
+          "league": "Serie A",
+          "flag": "🇮🇹",
+          "selection": "DC 1X",
+          "odds": 1.05,
+          "probability": 95
+        },
+        {
+          "match": "PSG vs Montpellier",
+          "league": "Ligue 1",
+          "flag": "🇫🇷",
+          "selection": "Over 1.5",
+          "odds": 1.10,
+          "probability": 92
+        },
+        {
+          "match": "Real Madrid vs Getafe",
+          "league": "La Liga",
+          "flag": "🇪🇸",
+          "selection": "Over 1.5",
+          "odds": 1.15,
+          "probability": 90
+        }
+      ],
+      "totalOdds": "1.33",
+      "stake": 4,
+      "winRate": 45
+    },
+    "media": {
+      "selections": [
+        {
+          "match": "Bayern Monaco vs Hoffenheim",
+          "league": "Bundesliga",
+          "flag": "🇩🇪",
+          "selection": "Over 2.5",
+          "odds": 1.35,
+          "probability": 78,
+          "edge": 6
+        },
+        {
+          "match": "Liverpool vs Tottenham",
+          "league": "Premier League",
+          "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+          "selection": "Over 2.5",
+          "odds": 1.45,
+          "probability": 72,
+          "edge": 5
+        },
+        {
+          "match": "PSV vs Twente",
+          "league": "Eredivisie",
+          "flag": "🇳🇱",
+          "selection": "BTTS Si",
+          "odds": 1.45,
+          "probability": 72,
+          "edge": 5
+        },
+        {
+          "match": "Borussia Dortmund vs Union Berlin",
+          "league": "Bundesliga",
+          "flag": "🇩🇪",
+          "selection": "BTTS Si",
+          "odds": 1.65,
+          "probability": 62,
+          "edge": 4
+        },
+        {
+          "match": "Ajax vs Utrecht",
+          "league": "Eredivisie",
+          "flag": "🇳🇱",
+          "selection": "Over 2.5",
+          "odds": 1.45,
+          "probability": 72,
+          "edge": 5
+        }
+      ],
+      "totalOdds": "6.58",
+      "stake": 3,
+      "winRate": 20
+    },
+    "jackpot": {
+      "selections": [
+        {
+          "match": "Inter vs Venezia",
+          "league": "Serie A",
+          "flag": "🇮🇹",
+          "selection": "Over 1.5",
+          "odds": 1.18,
+          "probability": 88
+        },
+        {
+          "match": "PSG vs Montpellier",
+          "league": "Ligue 1",
+          "flag": "🇫🇷",
+          "selection": "Over 1.5",
+          "odds": 1.10,
+          "probability": 92
+        },
+        {
+          "match": "Real Madrid vs Getafe",
+          "league": "La Liga",
+          "flag": "🇪🇸",
+          "selection": "Over 1.5",
+          "odds": 1.15,
+          "probability": 90
+        },
+        {
+          "match": "Manchester City vs Crystal Palace",
+          "league": "Premier League",
+          "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+          "selection": "DC 1X",
+          "odds": 1.08,
+          "probability": 92
+        },
+        {
+          "match": "Bayern Monaco vs Hoffenheim",
+          "league": "Bundesliga",
+          "flag": "🇩🇪",
+          "selection": "Over 1.5",
+          "odds": 1.08,
+          "probability": 94
+        },
+        {
+          "match": "Barcelona vs Las Palmas",
+          "league": "La Liga",
+          "flag": "🇪🇸",
+          "selection": "Over 1.5",
+          "odds": 1.12,
+          "probability": 91
+        },
+        {
+          "match": "Liverpool vs Tottenham",
+          "league": "Premier League",
+          "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+          "selection": "Over 2.5",
+          "odds": 1.45,
+          "probability": 72
+        },
+        {
+          "match": "Napoli vs Monza",
+          "league": "Serie A",
+          "flag": "🇮🇹",
+          "selection": "DC 1X",
+          "odds": 1.10,
+          "probability": 91
+        },
+        {
+          "match": "PSV vs Twente",
+          "league": "Eredivisie",
+          "flag": "🇳🇱",
+          "selection": "Over 2.5",
+          "odds": 1.35,
+          "probability": 78
+        },
+        {
+          "match": "Borussia Dortmund vs Union Berlin",
+          "league": "Bundesliga",
+          "flag": "🇩🇪",
+          "selection": "BTTS Si",
+          "odds": 1.65,
+          "probability": 62
+        },
+        {
+          "match": "Leverkusen vs Mainz",
+          "league": "Bundesliga",
+          "flag": "🇩🇪",
+          "selection": "Over 2.5",
+          "odds": 1.48,
+          "probability": 70
+        },
+        {
+          "match": "Ajax vs Utrecht",
+          "league": "Eredivisie",
+          "flag": "🇳🇱",
+          "selection": "BTTS Si",
+          "odds": 1.52,
+          "probability": 68
+        },
+        {
+          "match": "Benfica vs Braga",
+          "league": "Primeira Liga",
+          "flag": "🇵🇹",
+          "selection": "Over 2.5",
+          "odds": 1.65,
+          "probability": 62
+        }
+      ],
+      "totalOdds": "1186",
+      "stake": 1,
+      "winRate": 0.1
+    }
+  },
+  "stats": {
+    "total_matches": 16,
+    "value_bets_found": 22,
+    "leagues_processed": 7
+  }
+}
