@@ -381,16 +381,18 @@ def main():
 
     # Calculate next Thursday for "next_analysis"
     next_thursday = today + timedelta(days=7)
-    next_analysis_str = f"Giovedì {next_thursday.strftime('%d/%m')} alle 19:00"
+    next_analysis_str = f"Giovedì {next_thursday.strftime('%d/%m/%Y')} alle 19:00"
 
-    weekend_str = f"{friday.strftime('%d/%m')} - {sunday.strftime('%d/%m')}"
+    weekend_str = f"{friday.strftime('%d/%m/%Y')} - {sunday.strftime('%d/%m/%Y')}"
     print(f"📆 Analyzing weekend: {weekend_str}")
 
     # Create prompt for Claude
-    user_prompt = f"""Oggi è {today.strftime('%A %d %B %Y')} (giovedì).
+    user_prompt = f"""DATA CORRENTE: {today.strftime('%A %d %B %Y')} (oggi è giovedì).
+ANNO CORRENTE: {today.year}
+ANNO PROSSIMO: {today.year + 1}
 
 FASE 1 - ANALISI:
-Analizza le partite REALI del weekend {weekend_str} (venerdì {friday.strftime('%d/%m')}, sabato {saturday.strftime('%d/%m')}, domenica {sunday.strftime('%d/%m')}).
+Analizza le partite REALI del weekend {weekend_str} (venerdì {friday.strftime('%d/%m/%Y')}, sabato {saturday.strftime('%d/%m/%Y')}, domenica {sunday.strftime('%d/%m/%Y')}).
 
 Verifica:
 - Quali leghe sono attive (attenzione a pause invernali/nazionali)
