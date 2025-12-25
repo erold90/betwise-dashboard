@@ -1,0 +1,3 @@
+# BetWise Dependencies
+# No external dependencies needed - using only standard library
+# This file is kept for future extensions

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetWise - Schedine Weekend</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #0a0e17; min-height: 100vh; }
+        .glass { background: rgba(26, 34, 52, 0.9); border: 1px solid rgba(255,255,255,0.1); }
+        .card:active { transform: scale(0.98); }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🎯</span>
+                <span class="font-bold">BetWise</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+                <span id="weekend" class="text-gray-400">-</span>
+                <span id="statusDot" class="w-2 h-2 rounded-full bg-gray-500"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-6">
+        <!-- Status Message (shown when no schedine) -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="text-6xl mb-4">📭</div>
+            <h2 class="text-xl font-bold mb-2">Nessuna schedina disponibile</h2>
+            <p class="text-gray-400">Le nuove schedine arriveranno giovedì alle 19:00</p>
+        </div>
+
+        <!-- Skip State (shown when decision is SALTARE) -->
+        <div id="skipState" class="hidden text-center py-16">
+            <div class="text-6xl mb-4">⏭️</div>
+            <h2 class="text-xl font-bold mb-2 text-yellow-400">Weekend Saltato</h2>
+            <p id="skipReason" class="text-gray-400 mb-4">-</p>
+            <p id="nextAnalysis" class="text-sm text-gray-500">-</p>
+        </div>
+
+        <!-- Schedine Grid -->
+        <div id="schedineGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Schedine will be loaded here -->
+        </div>
+    </main>
+
+    <!-- Modal Schedina Detail -->
+    <div id="modal" class="fixed inset-0 bg-black/90 z-50 hidden overflow-y-auto">
+        <div class="min-h-screen px-4 py-8">
+            <div class="glass rounded-2xl max-w-lg mx-auto">
+                <div class="p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 id="modalTitle" class="text-lg font-bold">-</h3>
+                        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">✕</button>
+                    </div>
+                    <div id="modalContent" class="space-y-3 text-sm"></div>
+                    <div class="mt-5 pt-4 border-t border-gray-700 flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-400 text-xs">Quota Totale</p>
+                            <p id="modalQuota" class="text-xl font-bold">-</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-gray-400 text-xs">Vincita Potenziale</p>
+                            <p id="modalWin" class="text-xl font-bold text-green-400">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-gray-500 text-xs">
+        <p>⚠️ Gioca responsabilmente</p>
+        <p class="mt-1">BetWise + Claude AI</p>
+    </footer>
+
+    <script>
+        let predictions = null;
+
+        // Load predictions on page load
+        async function loadPredictions() {
+            try {
+                const response = await fetch('src/data/predictions.json?t=' + Date.now());
+                predictions = await response.json();
+
+                // Check if predictions are expired
+                if (isExpired(predictions)) {
+                    showEmpty();
+                    return;
+                }
+
+                // Check decision
+                const decision = predictions.decision || 'GIOCARE';
+
+                if (decision === 'SALTARE') {
+                    showSkip();
+                    return;
+                }
+
+                renderSchedine(decision);
+                updateHeader(decision);
+            } catch (e) {
+                showEmpty();
+            }
+        }
+
+        // Check if predictions have expired (day after last match)
+        function isExpired(data) {
+            if (!data || !data.weekend) return true;
+
+            // Parse weekend date (format: "DD/MM/YYYY - DD/MM/YYYY" or "DD/MM - DD/MM")
+            const parts = data.weekend.split(' - ');
+            if (parts.length !== 2) return true;
+
+            const endParts = parts[1].split('/');
+            if (endParts.length < 2) return true;
+
+            const day = parseInt(endParts[0]);
+            const month = parseInt(endParts[1]) - 1;
+            // Use year from date if available, otherwise current year
+            const year = endParts.length === 3 ? parseInt(endParts[2]) : new Date().getFullYear();
+
+            // Last match date + 1 day (expire on Monday)
+            const expireDate = new Date(year, month, day + 1, 23, 59, 59);
+
+            return new Date() > expireDate;
+        }
+
+        // Show empty state
+        function showEmpty() {
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('skipState').classList.add('hidden');
+            document.getElementById('schedineGrid').classList.add('hidden');
+            document.getElementById('statusDot').className = 'w-2 h-2 rounded-full bg-gray-500';
+        }
+
+        // Show skip state
+        function showSkip() {
+            document.getElementById('skipState').classList.remove('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('schedineGrid').classList.add('hidden');
+
+            const analysis = predictions.analysis || {};
+            document.getElementById('skipReason').textContent = analysis.recommendation || 'Condizioni non favorevoli';
+            document.getElementById('nextAnalysis').textContent = predictions.next_analysis || 'Prossima analisi: giovedì';
+
+            document.getElementById('weekend').textContent = predictions.weekend || '-';
+            document.getElementById('statusDot').className = 'w-2 h-2 rounded-full bg-yellow-500';
+        }
+
+        // Update header with weekend info
+        function updateHeader(decision) {
+            document.getElementById('weekend').textContent = predictions.weekend || '-';
+            const dotColor = decision === 'CAUTELA' ? 'bg-yellow-500' : 'bg-green-500';
+            document.getElementById('statusDot').className = 'w-2 h-2 rounded-full ' + dotColor;
+        }
+
+        // Render schedine cards
+        function renderSchedine(decision) {
+            const grid = document.getElementById('schedineGrid');
+            const schedine = predictions.schedine || {};
+
+            // Config based on decision
+            let config;
+            if (decision === 'CAUTELA') {
+                config = [
+                    { key: 'jackpot_safe', name: 'SAFE', emoji: '🟡', color: 'yellow' },
+                    { key: 'jackpot_risk', name: 'RISK', emoji: '🟠', color: 'orange' }
+                ];
+            } else {
+                config = [
+                    { key: 'jackpot_classic', fallback: 'jackpot1', name: 'CLASSIC', emoji: '🔴', color: 'red' },
+                    { key: 'jackpot_goals', fallback: 'jackpot2', name: 'GOALS', emoji: '🔥', color: 'orange' },
+                    { key: 'jackpot_results', fallback: 'jackpot3', name: 'RESULTS', emoji: '💎', color: 'cyan' },
+                    { key: 'jackpot_mega', fallback: 'jackpot4', name: 'MEGA', emoji: '🚀', color: 'pink' }
+                ];
+            }
+
+            let html = '';
+            let hasSchedine = false;
+
+            for (const c of config) {
+                const data = schedine[c.key] || (c.fallback && schedine[c.fallback]);
+                if (!data || !data.selections || data.selections.length === 0) continue;
+
+                hasSchedine = true;
+                const totalOdds = data.totalOdds || calculateOdds(data.selections);
+                const stake = data.stake || (decision === 'CAUTELA' ? 2 : 3);
+                const win = (parseFloat(totalOdds) * stake).toFixed(0);
+
+                html += `
+                <div class="glass card rounded-xl p-4 cursor-pointer border-l-4 border-${c.color}-500"
+                     onclick="showSchedina('${c.key}', '${c.fallback || c.key}')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-2 py-1 rounded-full bg-${c.color}-600/30 text-${c.color}-400 text-xs font-medium">${c.name}</span>
+                        <span class="text-xl">${c.emoji}</span>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-gray-400 text-xs">${data.selections.length} selezioni</p>
+                            <p class="text-lg font-bold text-${c.color}-400">Quota ${totalOdds}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-gray-400 text-xs">€${stake}</p>
+                            <p class="text-lg font-bold text-green-400">€${win}</p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            if (!hasSchedine) {
+                showEmpty();
+                return;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // Calculate total odds
+        function calculateOdds(selections) {
+            return selections.reduce((acc, s) => acc * (s.odds || 1), 1).toFixed(2);
+        }
+
+        // Show schedina detail
+        function showSchedina(key, fallback) {
+            const schedine = predictions.schedine || {};
+            const data = schedine[key] || schedine[fallback];
+            if (!data) return;
+
+            const name = key.replace('jackpot_', '').toUpperCase();
+            document.getElementById('modalTitle').textContent = `JACKPOT ${name}`;
+
+            let html = '';
+            data.selections.forEach((s, i) => {
+                html += `
+                <div class="flex justify-between items-center py-2 border-b border-gray-800">
+                    <div>
+                        <p class="font-medium">${s.flag || ''} ${s.match}</p>
+                        <p class="text-gray-400 text-xs">${s.league || ''}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-blue-400">${s.selection}</p>
+                        <p class="text-gray-400 text-xs">@${s.odds}</p>
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById('modalContent').innerHTML = html;
+
+            const totalOdds = data.totalOdds || calculateOdds(data.selections);
+            const stake = data.stake || 3;
+            document.getElementById('modalQuota').textContent = totalOdds;
+            document.getElementById('modalWin').textContent = `€${(parseFloat(totalOdds) * stake).toFixed(0)}`;
+
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') closeModal();
+        });
+
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initialize
+        loadPredictions();
+    </script>
+</body>
+</html>
