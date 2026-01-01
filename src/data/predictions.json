@@ -1,20 +1,20 @@
 {
-  "weekend": "26/12 - 28/12",
-  "generated_at": "2025-12-25T19:00:00Z",
+  "weekend": "02/01 - 04/01",
+  "generated_at": "2026-01-01T19:00:00Z",
   "decision": "SALTARE",
   "analysis": {
-    "leagues_active": 1,
-    "matches_available": 10,
-    "value_bets_found": 2,
+    "leagues_active": 2,
+    "matches_available": 8,
+    "value_bets_found": 1,
     "red_flags": [
-      "Solo Premier League attiva (Boxing Day)",
-      "Serie A, La Liga, Bundesliga, Ligue 1 in pausa natalizia",
-      "Calendario congestionato post-Natale",
-      "Rotazioni massive previste",
-      "Solo 10 partite disponibili vs minimo 15 richiesto"
+      "Pause invernali Serie A, Bundesliga, Ligue 1",
+      "Solo Premier League e La Liga attive",
+      "Meno di 15 partite disponibili",
+      "Calendario post-natalizio congestionato",
+      "Rotazioni massive per festività"
     ],
-    "recommendation": "Weekend natalizio con solo Premier League. Troppe incognite e poche opportunità. Aspettare Capodanno per maggiori opzioni."
+    "recommendation": "Weekend post-natalizio con troppe variabili. Solo 8 partite tra Premier e Liga, squadre in rotazione massima. Aspettare weekend più stabile."
   },
-  "next_analysis": "Giovedì 01/01/2026 alle 19:00",
+  "next_analysis": "Giovedì 08/01/2026 alle 19:00",
   "schedine": {}
 }
