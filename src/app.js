@@ -916,8 +916,25 @@ async function sendToTelegram() {
         return;
     }
 
-    const BOT_TOKEN = '8379433484:AAFnASEyKrae--Z9aRUeB8L_2aeGGb0YFPA';
-    const CHAT_ID = '328390648';
+    // Recupera le credenziali Telegram da localStorage o chiedi all'utente
+    let BOT_TOKEN = localStorage.getItem('betwise_telegram_token');
+    let CHAT_ID = localStorage.getItem('betwise_telegram_chat_id');
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+        BOT_TOKEN = prompt('Inserisci il Bot Token Telegram (da @BotFather):');
+        if (!BOT_TOKEN) {
+            alert('Token non inserito. Operazione annullata.');
+            return;
+        }
+        CHAT_ID = prompt('Inserisci il tuo Chat ID Telegram:');
+        if (!CHAT_ID) {
+            alert('Chat ID non inserito. Operazione annullata.');
+            return;
+        }
+        // Salva per usi futuri
+        localStorage.setItem('betwise_telegram_token', BOT_TOKEN);
+        localStorage.setItem('betwise_telegram_chat_id', CHAT_ID);
+    }
 
     const formatSchedina = (schedina, name, emoji) => {
         if (!schedina || !schedina.selections || schedina.selections.length === 0) return '';
