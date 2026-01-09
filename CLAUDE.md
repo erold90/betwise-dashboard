@@ -43,8 +43,8 @@ betwise-dashboard/
 
 **Secrets richiesti:**
 - `ANTHROPIC_API_KEY` - API key Claude
-- `TELEGRAM_BOT_TOKEN` - Token bot Telegram
-- `TELEGRAM_CHAT_ID` - Chat ID utente (328390648)
+- `TELEGRAM_BOT_TOKEN` - Token bot Telegram (da @BotFather)
+- `TELEGRAM_CHAT_ID` - Chat ID utente (usa @userinfobot per trovarlo)
 
 **Cosa fa:**
 1. Checkout repo
@@ -167,8 +167,12 @@ Parsing date: `DD/MM/YYYY - DD/MM/YYYY`
 
 ## TELEGRAM
 
-**Bot Token:** `8379433484:AAFnASEyKrae--Z9aRUeB8L_2aeGGb0YFPA`
-**Chat ID:** `328390648`
+**Bot Token:** *(configurare in GitHub Secrets o localStorage)*
+**Chat ID:** *(configurare in GitHub Secrets o localStorage)*
+
+> **SICUREZZA:** I token Telegram NON devono essere committati nel codice. Usare:
+> - GitHub Secrets per workflow automatici
+> - localStorage per la dashboard (il token viene chiesto al primo utilizzo)
 
 ### Messaggi inviati:
 
@@ -252,8 +256,6 @@ Modifica nel SYSTEM_PROMPT sezione "TIPI DI SCHEDINE"
 
 ## CONTATTI
 
-- **Utente:** Daniele
-- **Telegram Chat ID:** 328390648
 - **GitHub Repo:** erold90/betwise-dashboard
 
 ---

@@ -1,19 +1,20 @@
 {
-  "weekend": "09/01 - 11/01",
-  "generated_at": "2026-01-08T19:00:00Z",
+  "weekend": "10/01 - 12/01",
+  "generated_at": "2026-01-09T19:00:00Z",
   "decision": "SALTARE",
   "analysis": {
-    "leagues_active": 1,
+    "leagues_active": 2,
     "matches_available": 8,
-    "value_bets_found": 2,
+    "value_bets_found": 1,
     "red_flags": [
-      "Solo Premier League attiva (pausa invernale altre leghe)",
-      "Meno di 15 partite disponibili nel weekend",
-      "Serie A, La Liga, Bundesliga, Ligue 1 in pausa",
-      "Calendario limitato post-festività natalizie"
+      "Pausa invernale Serie A, La Liga, Ligue 1",
+      "Bundesliga in winter break",
+      "Solo Premier League e poche Championship",
+      "Meno di 15 partite totali disponibili",
+      "Calendario ridotto post-festività"
     ],
-    "recommendation": "Weekend critico con solo 8 partite Premier League. Troppi red flags per giocare. Aspettare ripresa campionati europei."
+    "recommendation": "Weekend post-natalizio con troppe leghe ferme. Solo Premier League attiva con calendario limitato. Condizioni sfavorevoli per scommesse professionali. Meglio aspettare la ripresa completa."
   },
-  "next_analysis": "Giovedì 15/01/2026 alle 19:00",
+  "next_analysis": "Giovedì 16/01/2026 alle 19:00",
   "schedine": {}
 }
